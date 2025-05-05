@@ -131,10 +131,13 @@ if __name__ == "__main__":
     ax = fig.add_subplot(111, projection='3d')
     ax.plot(earth_positions[:, 0], earth_positions[:, 1], earth_positions[:, 2], label="Earth Trajectory")
     ax.plot(lambert_positions[:, 0], lambert_positions[:, 1], lambert_positions[:, 2], label="Lambert Path")
+    ax.auto_scale_xyz(lambert_positions[:, 0], lambert_positions[:, 1], lambert_positions[:, 2])
+    ax.set_box_aspect([1,1,1])  # Requires matplotlib ≥ 3.3
+    plt.savefig("trajectory_plot.png")
     ax.set_xlabel("X (km)")
     ax.set_ylabel("Y (km)")
     ax.set_zlabel("Z (km)")
     ax.legend()
-    plt.show()
+    plt.show(block = True)
 
     
