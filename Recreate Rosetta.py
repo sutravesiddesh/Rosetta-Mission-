@@ -5,7 +5,61 @@ from scipy.integrate import solve_ivp
 
 mu = 1.32712440018e20  # Gravitational parameter for the Sun in km^3/s^2
 
-
+# def lambert_solver(r1, r2, dt, mu):
+#     # Flatten input position vectors
+#     r1, r2 = r1.flatten(), r2.flatten()
+    
+#     # Compute magnitudes of position vectors
+#     r1_norm, r2_norm = np.linalg.norm(r1), np.linalg.norm(r2)
+    
+#     # Calculate cosine and sine of true anomaly difference
+#     cos_dnu = np.dot(r1, r2) / (r1_norm * r2_norm)
+#     sin_dnu = np.sign(np.cross(r1, r2)[-1]) * np.sqrt(1 - cos_dnu**2)
+    
+#     # Compute constant A for Lambert's equation
+#     A = sin_dnu * np.sqrt(r1_norm * r2_norm / (1 - cos_dnu))
+    
+#     # Initialize z for Newton-Raphson iteration
+#     z = 1.0
+    
+#     # Iterate to solve for z using Newton-Raphson method
+#     for _ in range(50):
+#         # Compute Stumpff functions C and S
+#         C = (1 - np.cos(np.sqrt(z))) / z if z > 1e-6 else 0.5 - z / 24
+#         S = (np.sqrt(z) - np.sin(np.sqrt(z))) / (np.sqrt(z)**3) if z > 1e-6 else 1/6 - z / 120
+        
+#         # Calculate y parameter
+#         y = r1_norm + r2_norm + A * (z * S - 1) / np.sqrt(C)
+        
+#         # Compute function F and its derivative dFdz
+#         F = (y / C)**1.5 * S + A * np.sqrt(y) - np.sqrt(mu) * dt
+#         dFdz = (y / C)**1.5 * (1 / (2 * z) * (C - 3 * S / (2 * C)) + 3 * S**2 / (4 * C)) + A / 8 * (3 * S / C * np.sqrt(y) + A * np.sqrt(C / y))
+        
+#         # Update z using Newton-Raphson step
+#         dz = F / dFdz if abs(dFdz) > 1e-10 else 0
+#         z -= dz
+        
+#         # Check for convergence
+#         if abs(dz) < 1e-8:
+#             break
+    
+#     # If z is invalid, return simple velocity estimate
+#     if z < 0 or np.isnan(z):
+#         return (r2 - r1) / dt
+    
+#     # Compute chi and alpha for velocity calculation
+#     chi = np.sqrt(z)
+#     alpha = 1 - z * r1_norm / mu
+    
+#     # Calculate initial velocity vector v1
+#     v1 = (r2 - r1 * (1 - chi**2 * C / alpha)) / (np.sqrt(mu) * dt * np.sqrt(C) / chi)
+    
+#     # If velocity is invalid, return simple velocity estimate
+#     if np.any(np.isnan(v1)) or np.any(np.isinf(v1)):
+#         return (r2 - r1) / dt
+    
+#     # Return computed velocity vector
+#     return v1
 def lambert_problem(r1, r2, dt, mu):
     r1_mag = np.linalg.norm(r1)
     r2_mag = np.linalg.norm(r2)
